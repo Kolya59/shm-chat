@@ -13,12 +13,12 @@ import (
 const BufSize = 1024
 
 func ReadMsg(segment *shm.Segment, done chan interface{}) {
-	reader := bufio.NewReader(segment)
 	for {
 		select {
 		case <-done:
 			return
 		default:
+			reader := bufio.NewReader(segment)
 			line, err := reader.ReadString('\n')
 			if err == io.EOF {
 				time.Sleep(time.Second)
@@ -40,7 +40,6 @@ func ReadMsg(segment *shm.Segment, done chan interface{}) {
 
 func WriteMsg(segment *shm.Segment, done chan interface{}) {
 	tmpReader := bufio.NewReader(os.Stdin)
-	writer := bufio.NewWriter(segment)
 	for {
 		select {
 		case <-done:
@@ -70,6 +69,7 @@ func WriteMsg(segment *shm.Segment, done chan interface{}) {
 				continue
 			}
 
+			writer := bufio.NewWriter(segment)
 			if _, err := writer.WriteString(line); err != nil {
 				log.Println("Failed to write msg to chat: ", err)
 				<-done
