@@ -69,8 +69,7 @@ func WriteMsg(segment *shm.Segment, done chan interface{}) {
 				continue
 			}
 
-			writer := bufio.NewWriter(segment)
-			if _, err := writer.WriteString(line); err != nil {
+			if _, err := segment.Write([]byte(line)); err != nil {
 				log.Println("Failed to write msg to chat: ", err)
 				<-done
 				continue
